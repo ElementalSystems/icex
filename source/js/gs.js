@@ -1,15 +1,27 @@
 var _gs = {
-  line: function(x, y, x2, y2) {
+  startCom: function() {
     this.ctx.beginPath();
+    this.hold = true;
+  },
+  strokeCom: function() {
+    this.hold = false;
+    this.ctx.stroke();
+  },
+  line: function(x, y, x2, y2) {
+    if (!this.hold) this.ctx.beginPath();
     this.ctx.moveTo(x, y);
     this.ctx.lineTo(x2, y2);
-    this.ctx.stroke();
+    if (!this.hold) this.ctx.stroke();
     return this;
   },
-  circle: function(x, y, r,fill) {
-    this.ctx.beginPath();
-    this.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-    this.ctx.stroke();
+  circle: function(x, y, r, fill, start, end) {
+    start = start || 0;
+    end = end || 360;
+
+    this.ctx.moveTo(x + Math.cos(start * 2 * Math.PI / 360) * r, y + Math.sin(start * 2 * Math.PI / 360) * r);
+    if (!this.hold) this.ctx.beginPath();
+    this.ctx.arc(x, y, r, start * 2 * Math.PI / 360, end * 2 * Math.PI / 360, false);
+    if (!this.hold) this.ctx.stroke();
     if (fill) this.ctx.fill();
     return this;
   },
@@ -33,21 +45,21 @@ var _gs = {
     this.ctx.lineWidth = w / 100;
     return this;
   },
-  linePath: function(pts,fill) {
+  linePath: function(pts, fill) {
     this.ctx.beginPath();
-    this.ctx.moveTo(pts[0].x,pts[0].y);
-    for (var i=1;i<pts.length;i+=1)
+    this.ctx.moveTo(pts[0].x, pts[0].y);
+    for (var i = 1; i < pts.length; i += 1)
       this.ctx.lineTo(pts[i].x, pts[i].y);
     this.ctx.stroke();
     if (fill)
       this.ctx.fill();
     return this;
   },
-  discPath: function(pts,r,fill,shk) {
-    if (!shk) shk=0
-    for (var i=0;i<pts.length;i+=1) {
+  discPath: function(pts, r, fill, shk) {
+    if (!shk) shk = 0
+    for (var i = 0; i < pts.length; i += 1) {
       this.ctx.beginPath();
-      this.ctx.arc(pts[i].x+rdm(-shk,shk), pts[i].y+rdm(-shk,shk), r, 0, 2 * Math.PI);
+      this.ctx.arc(pts[i].x + rdm(-shk, shk), pts[i].y + rdm(-shk, shk), r, 0, 2 * Math.PI);
       this.ctx.stroke();
       if (fill) this.ctx.fill();
     }
@@ -101,8 +113,8 @@ var _gs = {
 
 function cgrad(ctx, s, cs) {
   var grd = ctx.createRadialGradient(0, 0, 0, 0, 0, s);
-  for (var i=0;i<cs.length;i+=1)
-    grd.addColorStop(i/(cs.length-1), cs[i]);  
+  for (var i = 0; i < cs.length; i += 1)
+    grd.addColorStop(i / (cs.length - 1), cs[i]);
   return grd;
 }
 
@@ -118,7 +130,7 @@ function gs(res) {
   ngs.ctx = ngs.canvas.getContext('2d');
   ngs.ctx.translate(+ngs.canvas.width / 2, +ngs.canvas.height / 2);
   ngs.ctx.scale(ngs.canvas.width, ngs.canvas.height);
-  ngs.ctx.lineCap = 'round';
+  ngs.ctx.lineCap = 'butt';
   ngs.ctx.textAlign = 'center';
   ngs.ctx.textBaseline = 'middle';
 
