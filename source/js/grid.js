@@ -47,6 +47,8 @@ function mkGrid() {
           for (var j = y; j < y + ys; j += 1) this.setNode(i, j, 1);
     },
 
+
+
     render: function(gs, end) {
       var width = 3;
       var bs = 1 / grid_s; //size of a block in graphic space
@@ -101,19 +103,19 @@ function mkGrid() {
         for (var y = 1; y < grid_s; y += 1)
           switch (this.getNode(x, y)) {
             case 1:
-              gs.lineStyle("rgba(192,0,0,.3)").lineWidth(.1);
-              gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off / 2);
+              //gs.lineStyle("rgba(192,0,0,.3)").lineWidth(.1);
+              //gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off / 2);
               break;
             case 2:
               gs.lineStyle("#FF0").lineWidth(.1);
               gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off * .8);
               break;
             case 3:
-              gs.lineStyle("#F0F").lineWidth(.1);
+              gs.lineStyle("#F00").lineWidth(.1);
               gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off * .8);
               break;
             case 4:
-              gs.lineStyle("#00F").lineWidth(.4);
+              gs.lineStyle("#F0F").lineWidth(.4);
               gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off * .8);
               break;
           }

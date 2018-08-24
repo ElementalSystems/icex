@@ -1,3 +1,35 @@
+function mkBoard(deck) {
+    var drawon = gs(40 * grid_s);
+    let bel = ctl("brd");
+    bel.appendChild(drawon.canvas);
+    var g = mkGrid();
+    dealDeck(g, deck);
+    let brd = {
+        ents: [],
+        inPlay: !0,
+        addEnt: function(e) {
+            e.brd = brd, brd.ents.push(e), bel.appendChild(e.el), e.init(), e.put();
+        }
+    };
+    g.render(drawon, function() {
+        drawon.setbg(bel), drawon.canvas.remove(), ctlcls("brd", "rdy"), function() {
+            for (let i = 0; i < grid_s; i += 1) for (let j = 0; j < grid_s; j += 1) {
+                let v = g.getNode(i, j);
+                v && 1 != v && brd.addEnt(mkEnt(v, i, j));
+            }
+        }(), requestAnimationFrame(gl);
+    });
+    let st = 0;
+    function gl(t) {
+        let ft = .01;
+        st && (ft = (t - st) / 1e3), ft > .1 && (ft = .1), st = t;
+        for (let i = 0; i < brd.ents.length; i += 1) brd.ents[i].tick(ft, t) && brd.ents[i].put();
+        brd.trackEnt && (bel.style.transform = "translate3d(" + (70 - brd.trackEnt.x / grid_s * 600) + "vmin," + (50 - brd.trackEnt.y / grid_s * 600) + "vmin,0)"), 
+        brd.inPlay && requestAnimationFrame(gl);
+    }
+    return brd;
+}
+
 function cRect(w, h) {
     return {
         w: w,
@@ -47,6 +79,70 @@ function dealDeck(grd, dckL) {
         x <= 0 || x + cd.w >= grid_s ? rX = !rX : y <= 0 || y + cd.h >= grid_s ? rY = !rY : cd.chk(grd, x, y) && (cd.drw(grd, x, y), 
         dck = remC(dck, i), xp = x, yp = y, wp = cd.w, hp = cd.h);
     }
+}
+
+function mkEnt(t, x, y) {
+    let cls = "ent", depth = 1, init = function() {}, tick = function() {
+        return !1;
+    };
+    switch (t) {
+      case 2:
+        init = function() {
+            this.brd.addEnt(mkEnt(10, this.x, this.y));
+        };
+        break;
+
+      case 10:
+        depth = 0, cls = "bike", init = function() {
+            this.bx = x, this.by = y, this.dir = 0, this.lpos = 0, this.brd.trackEnt = this;
+        }, tick = function(ft, t) {
+            if (this.lpos += 2 * ft, this.lpos > 1) switch (this.lpos -= 1, this.dir) {
+              case 0:
+                this.bx += 1;
+                break;
+
+              case 1:
+                this.by += 1;
+                break;
+
+              case 2:
+                this.bx -= 1;
+                break;
+
+              case 3:
+                this.by -= 1;
+            }
+            switch (this.dir) {
+              case 0:
+                this.x = this.bx + this.lpos, this.y = this.by;
+                break;
+
+              case 1:
+                this.x = this.bx, this.y = this.by + this.lpos;
+                break;
+
+              case 2:
+                this.x = this.bx + 1 - this.lpos, this.y = this.by;
+                break;
+
+              case 3:
+                this.x = this.bx, this.y = this.by + 1 - this.lpos;
+            }
+            return this.zrot = 90 * this.dir, !0;
+        };
+    }
+    return {
+        el: mkDivT(cls + "_" + t, cls, depth),
+        ty: t,
+        x: x,
+        y: y,
+        zrot: 0,
+        put: function() {
+            this.el.style.transform = "translate3d(" + this.x / grid_s * 600 + "vh," + this.y / grid_s * 600 + "vh,0) rotateZ(" + this.zrot + "deg)";
+        },
+        init: init,
+        tick: tick
+    };
 }
 
 var grid_s = 50;
@@ -102,7 +198,6 @@ function mkGrid() {
         renderTop: function(gs, end) {
             for (var bs = 1 / grid_s, off = bs / 2, x = 1; x < grid_s; x += 1) for (var y = 1; y < grid_s; y += 1) switch (this.getNode(x, y)) {
               case 1:
-                gs.lineStyle("rgba(192,0,0,.3)").lineWidth(.1), gs.circle(x * bs - .5 + off, y * bs - .5 + off, off / 2);
                 break;
 
               case 2:
@@ -110,11 +205,11 @@ function mkGrid() {
                 break;
 
               case 3:
-                gs.lineStyle("#F0F").lineWidth(.1), gs.circle(x * bs - .5 + off, y * bs - .5 + off, .8 * off);
+                gs.lineStyle("#F00").lineWidth(.1), gs.circle(x * bs - .5 + off, y * bs - .5 + off, .8 * off);
                 break;
 
               case 4:
-                gs.lineStyle("#00F").lineWidth(.4), gs.circle(x * bs - .5 + off, y * bs - .5 + off, .8 * off);
+                gs.lineStyle("#F0F").lineWidth(.4), gs.circle(x * bs - .5 + off, y * bs - .5 + off, .8 * off);
             }
             end && end();
         }
@@ -206,13 +301,7 @@ function gs(res) {
 }
 
 function start() {
-    var drawon = gs(100 * grid_s);
-    ctl("brd").appendChild(drawon.canvas);
-    var g = mkGrid();
-    dealDeck(g, [ "2DDDDD", "AAAABBBB", "AAAABBBB344", "33444AABB", "CDECDECDE" ]), 
-    g.render(drawon, function() {
-        drawon.setbg(ctl("brd")), drawon.canvas.remove(), setTimeout(() => ctlcls("brd", "rdy"), 3e3);
-    });
+    mkBoard([ "2DDDDD", "AAAABBBB", "AAAABBBB344", "33444AABB", "CDECDECDE" ]);
 }
 
 function ctl(id) {
@@ -240,5 +329,16 @@ function rdm(min, max) {
 
 function remC(s, index) {
     return s.slice(0, index) + s.slice(index + 1);
+}
+
+function mkDiv(cls, cls2) {
+    let d = document.createElement("div");
+    return d.classList.add(cls), cls2 && d.classList.add(cls2), d;
+}
+
+function mkDivT(cls, cls2, dep) {
+    let d = mkDiv(cls, cls2);
+    return dep > 0 && (d.appendChild(mkDivT("l", null, dep - 1)), d.appendChild(mkDivT("r", null, dep - 1))), 
+    d;
 }
 //# sourceMappingURL=scripts.js.map
