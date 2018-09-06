@@ -14,6 +14,13 @@ var _gs = {
     if (!this.hold) this.ctx.stroke();
     return this;
   },
+  rect: function(x, y, x2, y2) {
+    if (!this.hold) this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    this.ctx.rect(x, y,x2-x,y2-y);
+    if (!this.hold) this.ctx.stroke();
+    return this;
+  },
   circle: function(x, y, r, fill, start, end) {
     start = start || 0;
     end = end || 360;
@@ -82,6 +89,13 @@ var _gs = {
     var data = this.canvas.toDataURL();
     el.style.backgroundImage = 'url(' + data + ')';
     return this;
+  },
+  snap: function() {
+    let data = this.canvas.toDataURL();
+    return function(el) {
+      //console.log("sbap set");
+      el.style.backgroundImage = 'url(' + data + ')';
+    }
   },
   echo: function(frames, xs, ys, xe, ye, rots, rote, ss, se, alphas, alphae) {
     var ngs = gs(this.res);

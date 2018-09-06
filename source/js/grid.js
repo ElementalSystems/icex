@@ -7,6 +7,7 @@ function mkGrid() {
 
   return {
     getL: function(x, y, d) {
+      if (d < 0) return false; //no direction is never available!s
       if (d % 2) //e-w
         return _ew[x + y * grid_s - ((d == 3) ? 1 : 0)];
       else //n-s
@@ -24,7 +25,7 @@ function mkGrid() {
     checkRect: function(x, y, cx, cy) {
       for (i = 0; i < cx; i += 1)
         for (j = 0; j < cy; j += 1)
-          if (this.getNode(i+x, j+y)) return true;
+          if (this.getNode(i + x, j + y)) return true;
       return false;
     },
     setNode: function(x, y, st) {
@@ -47,17 +48,33 @@ function mkGrid() {
           for (var j = y; j < y + ys; j += 1) this.setNode(i, j, 1);
     },
 
-
+    //choose which way we can go from this intersection
+    // d1 - first choice
+    // d2 - second choice
+    // dc - current direction
+    selDir: function(d1, d2, dc, x, y) {
+      if (this.getL(x, y, d1)) return d1; //if we can go the direction we want
+      if (this.getL(x, y, d2)) return d2; //or the other
+      if (this.getL(x, y, dc)) return dc; //or go straight
+      if (this.getL(x, y, (dc + 1) % 4)) return (dc + 1) % 4; //or left
+      if (this.getL(x, y, (dc + 3) % 4)) return (dc + 3) % 4; //or right
+      return (dc + 2) % 4; //have to go backwards!
+    },
 
     render: function(gs, end) {
-      var width = 3;
+      var width = 5;
       var bs = 1 / grid_s; //size of a block in graphic space
       var off = bs * .4;
-      gs.lineGrad("rgba(0,128,64,.05)", "rgba(0,255,128,.05)", "rgba(64,192,64,.05)", "rgba(0,128,0,.05)", "rgba(255,128,64,.05)", "rgba(64,128,64,.05)");
+      //gs.lineGrad("rgba(0,128,64,.05)", "rgba(0,255,128,.05)", "rgba(64,192,64,.05)", "rgba(0,128,0,.05)", "rgba(255,128,64,.05)", "rgba(64,128,64,.05)");
+      gs.lineGrad("rgba(0,64,128,.05)", "rgba(0,128,225,.05)", "rgba(64,64,192,.05)", "rgba(0,0,128,.05)");
       asyncRepeat(
         () => {
-          gs.startCom();
+          width *= .7;
           gs.lineWidth(width);
+          if (width<.005)
+            gs.lineStyle("rgba(0,0,255,1)").lineWidth(.005);
+          gs.startCom();
+
           for (var x = 1; x < grid_s; x += 1)
             for (var y = 1; y < grid_s; y += 1) {
               //draw e link
@@ -86,10 +103,8 @@ function mkGrid() {
                 gs.circle(-.5 + x * bs - off, -.5 + y * bs + off, off, false, 270, 360);
             }
           gs.strokeCom();
-          width *= .7;
-          //width-=.3;
 
-          return width >= 0.01;
+          return width >= 0.005;
         },
         () => {
           this.renderTop(gs, end);
@@ -112,10 +127,6 @@ function mkGrid() {
               break;
             case 3:
               gs.lineStyle("#F00").lineWidth(.1);
-              gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off * .8);
-              break;
-            case 4:
-              gs.lineStyle("#F0F").lineWidth(.4);
               gs.circle(-.5 + x * bs + off, -.5 + y * bs + off, off * .8);
               break;
           }

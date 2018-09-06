@@ -25,6 +25,7 @@ function bGen(ty, sz, di, ring) {
       if (di) {
         grd.drawR(x + o, y + o, 1, 1);
         grd.drawS(x + o + 1, y + o + 1, o);
+        grd.drawS(x + 1, y , o);
       }
       if (ring) {
         grd.drawR(x + 1, y + 1, sz - 2, sz - 2);
@@ -42,9 +43,16 @@ var cards = {
   C: cRect(5, 15),
   D: cRect(10, 10),
   E: cRect(5, 5),
+  F: cRect(2, 2),
+  G: cRect(1, 10),
+  H: cRect(10, 1),
+
+
   '2': bGen(2, 3, true),
   '3': bGen(3, 3, true),
-  '4': bGen(4, 7, false, true)
+  '4': bGen(4, 7, false, true),
+  '5': bGen(5, 7, false, true),
+  '6': bGen(6, 7, false, true)
 };
 
 function dealDeck(grd, dckL) {
