@@ -1,6 +1,14 @@
 function start() {
-    mkDecor();
-    mkBoard(["2", "FFGGHH","BCDBCD445566", "AABBCDEFGH3333"]);
-    //mkBoard(["2DDABD5466", /*"AAAABBBB","AAAABBBB33", "33444555AABB","CDECDECDE" ,"CDEABCDEA","BCDEABCDE","ABCDEABCDE" */]);
-    //mkBoard(["2DDD4444" ]);
+  mkDecor();
+  info("ICE-X",
+    "Explore the network grid\n free the great minds\nand watch out for\ndefensive ICE agents.\n\n\n<small> a game by elementalsystems\nfor js13kgames.com</small>\n\n",
+    "Play Now",
+    function() { startGame(); });
+}
+
+function startGame()
+{
+  userscore = 0;
+  userlives = 3;
+  mkBoard(1);
 }

@@ -18,6 +18,10 @@ function mkDecor() {
     'ent_6_1': gs().lineStyle("#0F0").lineWidth(2).rect(-.35,-.35,.35,.35).rect(-.25,-.25,.25,.25).rect(-.15,-.15,.15,.15).snap(),
     'ent_6_2': gs().lineStyle("rgba(0,255,0,.5)").lineWidth(12).rect(-.40,-.40,.40,.40).rect(-.15,-.15,.15,.15).snap(),
     'ent_6_3': gs().lineStyle("rgba(192,192,255,.8)").lineWidth(2).rect(-.45,-.45,.45,.45).rect(-.4,-.4,.4,.4).rect(-.35,-.35,.35,.35).snap(),
+    'ent_7_3': gs().lineStyle("#840").lineWidth(10).line(-.5,-.5,.5,0).line(-.5,-.5,0,.5).snap(),
+    'ent_7_2': gs().lineStyle("#AA0").lineWidth(6).line(-.5,-.5,.5,0).line(-.5,-.5,0,.5).snap(),
+    'ent_7_1': gs(100).lineStyle("#FF0").lineWidth(6).line(-.5,-.5,.5,0).line(-.5,-.5,0,.5)
+                   .echo(8, 0, 0, 0, 0, -45, 45, 1, 1, .5, .2).snap(),
 
     'drt_16_1': gs().lineGrad("rgba(0,192,255,.3)","rgba(0,0,255,.6)").lineWidth(5).line(-.1,-.4,0,-.3).line(-.2,-.2,0,-.3).line(-.2,-.2,0,-.1)
       .echo(12, 0, 0, 0, 0, 0, 720, 1, .5, 1, 1).snap(),

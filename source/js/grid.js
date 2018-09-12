@@ -61,12 +61,11 @@ function mkGrid() {
       return (dc + 2) % 4; //have to go backwards!
     },
 
-    render: function(gs, end) {
+    render: function(gs, cols,end) {
       var width = 5;
       var bs = 1 / grid_s; //size of a block in graphic space
       var off = bs * .4;
-      //gs.lineGrad("rgba(0,128,64,.05)", "rgba(0,255,128,.05)", "rgba(64,192,64,.05)", "rgba(0,128,0,.05)", "rgba(255,128,64,.05)", "rgba(64,128,64,.05)");
-      gs.lineGrad("rgba(0,64,128,.05)", "rgba(0,128,225,.05)", "rgba(64,64,192,.05)", "rgba(0,0,128,.05)");
+      gs.lineGradA(cols); //pass array as params
       asyncRepeat(
         () => {
           width *= .7;

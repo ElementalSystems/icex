@@ -46,20 +46,22 @@ var cards = {
   F: cRect(2, 2),
   G: cRect(1, 10),
   H: cRect(10, 1),
+  I: cRect(1,1),
 
 
   '2': bGen(2, 3, true),
   '3': bGen(3, 3, true),
   '4': bGen(4, 7, false, true),
   '5': bGen(5, 7, false, true),
-  '6': bGen(6, 7, false, true)
+  '6': bGen(6, 7, false, true),
+  '7': bGen(7, 7, false, true)
 };
 
 function dealDeck(grd, dckL) {
   var xp = rdmI(5, grid_s / 2 - 5);
   var yp = rdmI(5, grid_s / 2 - 5);
   var wp = 1,
-    hp = 1;
+    hp = 1,err=0;
   var rX = false,
     rY = false;
   for (var j = 0; j < dckL.length; j += 1) {
@@ -82,6 +84,11 @@ function dealDeck(grd, dckL) {
       //shift for reverse direction
       var x = x - (rX ? cd.w : 0);
       var y = y - (rY ? cd.h : 0);
+      err+=1;
+      if (err>5) {
+        err=0;
+        dck=dck+"GH";
+      }
       //check it extents
       if ((x <= 0) || (x + cd.w >= grid_s)) {
         rX = !rX;
@@ -93,7 +100,7 @@ function dealDeck(grd, dckL) {
       }
       //run card check
       if (!cd.chk(grd, x, y)) continue;
-
+      err=0;
       //draw card
       cd.drw(grd, x, y);
       //remove fromdeck

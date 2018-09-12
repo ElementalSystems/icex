@@ -34,10 +34,10 @@ function userController(ft, t) { //bike controller attached to the keyboard
   this.dp1 = -1;
   this.dp2 = -1;
   _drtt-=ft;
-  if (_pressed[38]) this.dp1=0;
-  if (_pressed[40]) this.dp1=2;
-  if (_pressed[37]) this.dp2=3;
-  if (_pressed[39]) this.dp2=1;
+  if (_pressed[38]||_pressed[87]) this.dp1=0;
+  if (_pressed[40]||_pressed[83]) this.dp1=2;
+  if (_pressed[37]||_pressed[65]) this.dp2=3;
+  if (_pressed[39]||_pressed[68]) this.dp2=1;
   if ((this.dp1<0)&&(this.dp2<0)) { //no keys - try the D-pad thing
     if ((_lastT.x>-1)&&(_lastT.x<1)) { //has been touched
       if (_lastT.x>.2) this.dp1=1;
@@ -64,17 +64,27 @@ function mkAiCtl(brd)
   let time=0;
   return function (ft, t) {
     time-=ft;
+    max=1;
     if (time<0) {
-      let xd=brd.trackEnt.x-this.x;
-      let yd=brd.trackEnt.y-this.y;
-      this.dp1 = (xd>0)?1:3;
-      this.dp2 = (yd>0)?2:0;
-      if (Math.abs(yd)>Math.abs(xd)) { //swap them
+      let xdf=brd.trackEnt.x-this.x;
+      let ydf=brd.trackEnt.y-this.y;
+      let dist=Math.abs(xdf)+Math.abs(ydf);
+      if ((dist>15)&&(!rdmI(0,9))) { //far away maybe act a crazy random one time in ten
+        xdf*=-1;
+        ydf*=-1;
+        max=3;
+      } else if ((dist>5)&&(!rdmI(0,4))) { //occasionally aim towards where the user is going
+        xdf+=xd(brd.trackEnt.dir)*10;
+        ydf+=yd(brd.trackEnt.dir)*10;
+      }
+      this.dp1 = (xdf>0)?1:3;
+      this.dp2 = (ydf>0)?2:0;
+      if (Math.abs(ydf)>Math.abs(xdf)) { //swap them
         var t=this.dp1;
         this.dp1=this.dp2;
         this.dp2=t;
       }
-      time=rdm(0.25,1);
+      time=rdm(0.25,max);
     }
   }
   //dumb random controller

@@ -44,6 +44,10 @@ var _gs = {
     this.ctx.strokeStyle = cgrad(this.ctx, .5, arguments);
     return this;
   },
+  lineGradA: function(a) {
+    this.ctx.strokeStyle = cgrad(this.ctx, .5, a);
+    return this;
+  },
   fillGrad: function() {
     this.ctx.fillStyle = cgrad(this.ctx, 15, arguments);
     return this;
@@ -63,7 +67,7 @@ var _gs = {
     return this;
   },
   discPath: function(pts, r, fill, shk) {
-    if (!shk) shk = 0
+    if (!shk) shk = 0;
     for (var i = 0; i < pts.length; i += 1) {
       this.ctx.beginPath();
       this.ctx.arc(pts[i].x + rdm(-shk, shk), pts[i].y + rdm(-shk, shk), r, 0, 2 * Math.PI);
