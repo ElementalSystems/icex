@@ -1,0 +1,28 @@
+//Wider menu items
+.ui-menu {
+    width: 15em !important;
+}
+
+//mixin to add custom icons
+@mixin customIcon($name)
+{
+  .pi.#{$name}:before {
+      content: '\0000a0\0000a0';
+      background-image: url(icons/#{$name}.png);
+      background-size: 100% 100%
+    }
+}
+
+//custom icon definitions
+@include customIcon(ihg10);
+@include customIcon(ihg11);
+@include customIcon(ihg29);
+@include customIcon(ihg51);
+@include customIcon(ihg146);
+@include customIcon(ihg153);
+@include customIcon(ihg165);
+@include customIcon(ihg178);
+@include customIcon(ihg181);
+@include customIcon(ihg182);
+@include customIcon(ihg185);
+@include customIcon(ihg188);
